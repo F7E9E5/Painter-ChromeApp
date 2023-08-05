@@ -1,16 +1,16 @@
-const lineWidth=document.getElementById("line-width");
-const colorOptions=Array.from(document.getElementsByClassName("color-option"));
-const color = document.getElementById("color");
 const canvas=document.querySelector("canvas");
 const context=canvas.getContext("2d");
 
-const textInput=document.getElementById("text");
+const colorOptions=Array.from(document.getElementsByClassName("color-option"));
+const color=document.getElementById("color");
 
+
+const lineWidth=document.getElementById("line-width");
 const modeBtn=document.getElementById("mode-btn");
 const destroyBtn=document.getElementById("destroy-btn");
 const eraserBtn=document.getElementById("erasor-btn");
 const saveBtn=document.getElementById("save");
-
+const textInput=document.getElementById("text");
 const fileInput=document.getElementById("file");
 
 canvas.width=800;
@@ -19,31 +19,6 @@ context.lineWidth=lineWidth.value;
 context.lineCap="round";
 let isPainting=false;
 let isFilling=false;
-
-const colors=[
-	"#1abc9c",
-	"#2ecc71",
-	"#3498db",
-	"#9b59b6",
-	"#34495e",
-	"#f1c40f",
-	"#e67e22",
-	"#e74c3c",
-	"#ecf0f1",
-	"#95a5a6",
-];
-
-var x=0, y=0;
-
-function onClick(event) {
-	context.beginPath();
-	context.moveTo(x, y);
-	const color=colors[Math.floor(Math.random()*colors.length)];
-	context.strokeStyle=color;
-	context.lineTo(event.offsetX, event.offsetY);
-	context.stroke();
-	x=event.offsetX, y=event.offsetY;
-}
 
 function onMove(event) {
 	if (isPainting && !isFilling) {
@@ -129,12 +104,12 @@ function onFileChange(event) {
 function onDoubleClick(event) {
 	const text=textInput.value;
 	if (text==="") return;
-	let temp=context.lineWidth;
+	context.save();
 	context.lineWidth=1;
 	context.font="48px consolas";
-	context.fillText(text, event.offsetX, event.offsetY);
-	context.lineWidth=temp;
 	console.log("DoubleClick occured at " + event.offsetX +" "+ event.offsetY);
+	context.fillText(text, event.offsetX, event.offsetY);
+	context.restore();
 }
 
 function onSaveClick() {
@@ -155,13 +130,11 @@ canvas.addEventListener("click", onCanvasClick);
 lineWidth.addEventListener("change", onLineWidthChange);
 color.addEventListener("change", onColorChange);
 
-console.log(colorOptions);
-
 colorOptions.forEach(color => color.addEventListener("click", onColorClick));
 
 modeBtn.addEventListener("click", onModeClick);
 destroyBtn.addEventListener("click", onDestroyClick);
 eraserBtn.addEventListener("click", onErasorClick);
-saveBtn.addEventListener("click", onSaveClick);
 
 fileInput.addEventListener("change", onFileChange);
+saveBtn.addEventListener("click", onSaveClick);
